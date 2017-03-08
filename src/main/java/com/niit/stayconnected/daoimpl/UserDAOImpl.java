@@ -108,4 +108,16 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 
+		@Transactional
+		public List<UserInfo> list() {
+		/*	log.debug("->->Starting of the method list");*/
+			@SuppressWarnings("unchecked")
+			List<UserInfo> list = (List<UserInfo>) sessionFactory.getCurrentSession()
+					.createCriteria(UserInfo.class)
+					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+
+			return list;
+		}
+
+
 }

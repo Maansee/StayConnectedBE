@@ -41,6 +41,13 @@ private String gender;
 @Column
 private String city;
 
+@Column
+private int mobileno;
+
+private String ErrorCode;
+
+private String ErrorMessage;
+
 
 //STUDENT, ALUMINI,EMPLOYEE, ADMIN
 private String role;
@@ -128,4 +135,30 @@ private String role;
 	public void setOnline(boolean isOnline) {
 		this.isOnline = isOnline;
 	}
+
+	public int getMobileno() {
+		return mobileno;
+	}
+
+	public void setMobileno(int mobileno) {
+		this.mobileno = mobileno;
+	}
+
+	public String getErrorCode() {
+		return ErrorCode;
+	}
+
+	public void setErrorCode(String errorCode) {
+		ErrorCode = errorCode;
+	}
+
+	public String getErrorMessage() {
+		return ErrorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		ErrorMessage = errorMessage;
+	}
+
+
 }
