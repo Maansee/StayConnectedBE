@@ -6,11 +6,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Table(name = "UserInfo")
@@ -33,7 +36,7 @@ private String password;
 
 @Column(unique=true,nullable=false)
 @Email
-private String mailid;
+private String email;
 
 @Column
 private String gender;
@@ -42,27 +45,24 @@ private String gender;
 private String city;
 
 @Column
-private int mobileno;
-
-private String ErrorCode;
-
-private String ErrorMessage;
-
+private int mobile;
 
 //STUDENT, ALUMINI,EMPLOYEE, ADMIN
-private String role;
+@Column
+private String userrole;
 
-//enabled - true or false  - active or inactive user 
-	//true - authenticated
-	//false - user cannot login
-	@Column(name="enabled")
-	private boolean enabled;
+@Column
+@NotNull
+private char approved; //'Y','N' by admin
 
 	//inOnline - true, false
 	//user login - make this isOnline as true - login 
 	//user logout - make this isOnline as false - logout
 	@Column(name="isOnline")
-	private boolean isOnline;
+	private char isOnline;
+	
+	@Transient
+	private MultipartFile displayimage;
 
 	public int getUserId() {
 		return userId;
@@ -88,12 +88,12 @@ private String role;
 		this.password = password;
 	}
 
-	public String getMailid() {
-		return mailid;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setMailid(String mailid) {
-		this.mailid = mailid;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getGender() {
@@ -112,53 +112,46 @@ private String role;
 		this.city = city;
 	}
 
-	public String getRole() {
-		return role;
+	public int getMobile() {
+		return mobile;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setMobile(int mobile) {
+		this.mobile = mobile;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
+	public String getUserrole() {
+		return userrole;
 	}
 
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+	public void setUserrole(String userrole) {
+		this.userrole = userrole;
 	}
 
-	public boolean isOnline() {
+	public char getApproved() {
+		return approved;
+	}
+
+	public void setApproved(char approved) {
+		this.approved = approved;
+	}
+
+	public char getIsOnline() {
 		return isOnline;
 	}
 
-	public void setOnline(boolean isOnline) {
+	public void setIsOnline(char isOnline) {
 		this.isOnline = isOnline;
 	}
 
-	public int getMobileno() {
-		return mobileno;
+	public MultipartFile getDisplayimage() {
+		return displayimage;
 	}
 
-	public void setMobileno(int mobileno) {
-		this.mobileno = mobileno;
+	public void setDisplayimage(MultipartFile displayimage) {
+		this.displayimage = displayimage;
 	}
-
-	public String getErrorCode() {
-		return ErrorCode;
-	}
-
-	public void setErrorCode(String errorCode) {
-		ErrorCode = errorCode;
-	}
-
-	public String getErrorMessage() {
-		return ErrorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		ErrorMessage = errorMessage;
-	}
+	
 
 
 }

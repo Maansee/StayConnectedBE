@@ -5,12 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HomeController {
 
 	@RequestMapping("/")
-	public String welcome(){
+	public String homepage(){
 		return "/index";
 	}
 	
-	@RequestMapping("register")
-	public String Register(){
-		return "/register";
-	}
+	
 }

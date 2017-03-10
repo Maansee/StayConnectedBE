@@ -7,6 +7,8 @@ import com.niit.stayconnected.model.UserInfo;
 public interface UserDAO {
 	
 	public List<UserInfo> list();
+	
+	public List<UserInfo> getAllUsers(UserInfo user);
 
 	public UserInfo get(int userId, String password);
 
@@ -20,8 +22,6 @@ public interface UserDAO {
 
 	public UserInfo authenticate(int userId, String password);
 
-	public List<UserInfo> getAllUsers(UserInfo user);
-	
 	public void setOnline(String userId);
 
 	public void setOffLine(String userId);

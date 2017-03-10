@@ -42,7 +42,7 @@ public class Email {
 	          message.setFrom(new InternetAddress("StayConnected"));
 	    	  System.out.println("m6");
 	          message.setRecipients(Message.RecipientType.TO,
-	              InternetAddress.parse(user.getMailid()));
+	              InternetAddress.parse(user.getEmail()));
 	    	  System.out.println("m7");
 	          message.setSubject(subject);
 	    	  System.out.println("m8");
