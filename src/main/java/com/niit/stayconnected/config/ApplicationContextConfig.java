@@ -30,10 +30,10 @@ public class ApplicationContextConfig {
 		Properties hibernateProperties=new Properties();
 		hibernateProperties.setProperty(
 				"hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
-		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
 		lsf.addProperties(hibernateProperties);
-		Class classes[]={UserInfo.class,Job.class,Error.class};
+		Class classes[]={UserInfo.class,};
 		return lsf.addAnnotatedClasses(classes)
 
 		   .buildSessionFactory();
@@ -51,5 +51,4 @@ public class ApplicationContextConfig {
 	public HibernateTransactionManager hibTransManagement(){
 		return new HibernateTransactionManager(sessionFactory());
 	}
-	
 }

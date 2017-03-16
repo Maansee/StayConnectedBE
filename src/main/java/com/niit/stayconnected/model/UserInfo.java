@@ -8,10 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
+
 import org.springframework.stereotype.Component;
 
 
@@ -25,13 +23,11 @@ public class UserInfo {
 private int id;
 	
 @Column(unique=true,nullable=false)
-@Size(min = 4, max = 16)
-@NotBlank (message = "Enter a valid User Name !")
+
 private String username;
 
 @Column(nullable=false)
-@Size(min = 4, max = 16)
-@NotBlank (message = "Enter a password!")
+
 private String password;
 
 @Column(unique=true,nullable=false)
