@@ -2,8 +2,10 @@ package com.niit.stayconnected.daoimpl;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
+
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.niit.stayconnected.dao.UserDAO;
 import com.niit.stayconnected.model.UserInfo;
 
-@SuppressWarnings("deprecation")
+
 @Transactional
 @Repository("userDAO")
 public class UserDAOImpl implements UserDAO {
@@ -20,104 +22,94 @@ public class UserDAOImpl implements UserDAO {
 	@Autowired(required=true)
 	private SessionFactory sessionFactory;
 
-	@Transactional
-	public UserInfo get(int userId, String password) {
-		String hql = "from UserInfo where id=" + "'"+ userId+"'  and password = "
-				+"'" + password + "'";
-	   return getUserInfo(hql);
+	public SessionFactory getSessionFactory() {
+		return sessionFactory;
 	}
 
-	private UserInfo getUserInfo(String hql) {
-		 Query query = sessionFactory.getCurrentSession().createQuery(hql);
-			
-			@SuppressWarnings("unchecked")
-			List<UserInfo> list = (List<UserInfo>) query.list();
-			
-			if (list != null && !list.isEmpty()) {
-				return list.get(0);
-			}
-			return null;
+	public void setSessionFactory(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
-	@Transactional
-	public UserInfo get(int userId) {
-		return (UserInfo) sessionFactory.getCurrentSession().get(UserInfo.class, userId);
-	}
 
-	@Transactional
-	public boolean save(UserInfo user) {
-		sessionFactory.getCurrentSession().save(user);
+	/*public UserInfo authenticate(UserInfo user) {
+		System.out.println("h9");
 		
-		return true;
-	}
+			Session session=sessionFactory.openSession();
+				System.out.println("h10");
+				System.out.println("name"+user.getUsername()+"password"+user.getPassword());
+		
+				List<UserInfo> validUser = session.createQuery("from UserInfo where username='"+user.getUsername()+"'  and password='"+user.getPassword()+"'").list();
+					if(validUser!=null && !validUser.isEmpty()){
+						System.out.println("Hellow123");
+						return validUser.get(0);
+				}
+					return null;
+	}*/
 
-	@Transactional
-	public boolean update(UserInfo user) {
-		sessionFactory.getCurrentSession().update(user);
-		return true;
-	}
+	public UserInfo authenticate(UserInfo user) {
+		System.out.println("h9");
 
-	@Transactional
-	public void delete(int userId) {
-		UserInfo user = new UserInfo();
-		user.setUserId(userId);
-		sessionFactory.getCurrentSession().delete(user);
+		Session session=sessionFactory.openSession();
+		System.out.println("h10");
+
+		Query query=session.createQuery("from UserInfo where username='"+user.getUsername()+"'  and password='"+user.getPassword()+"'");
+		//select * from User where username='smith' and password='123'
+		System.out.println("h11");
+
+//		query.setString(0, user.getUsername());
+//		query.setString(1, user.getPassword());
+	    System.out.println("name"+user.getUsername());
+
+	    UserInfo validUser=(UserInfo)query.uniqueResult();
+
+		session.close();
+
+		return validUser;
 		
 	}
-
-	@Transactional
-	public UserInfo authenticate(int userId, String password) {
-		String hql = "from UserInfo where id= '" + userId + "' and " + " password ='" + password+"'";
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		
-		@SuppressWarnings("unchecked")
-		List<UserInfo> list = (List<UserInfo>) query.list();
-		
-		if (list != null && !list.isEmpty()) {
-			return list.get(0);
-		}
-		
-		return null;
-	}
-
-	@SuppressWarnings({ "unchecked", "deprecation" })
-	@Transactional
-	public List<UserInfo> getAllUsers(UserInfo user) {
-		List<UserInfo> list = (List<UserInfo>) sessionFactory.getCurrentSession()
-				.createCriteria(UserInfo.class)
-				.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
-		return list;
-	}
-
-	@Transactional
-	public void setOnline(String userID) {
-		String hql =" UPDATE UserInfo	SET isOnline = 'Y' where id='" +  userID + "'" ;
 	
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.executeUpdate();
+	
+	public void updateUser(UserInfo user) {
+		Session session=sessionFactory.openSession();
+		UserInfo existingUser=(UserInfo)session.get(UserInfo.class, user.getId());
+		//update online status as true
+		existingUser.setOnline(user.isOnline()); 
 		
+		session.update(existingUser);
+		session.flush();
+		session.close();		
 	}
 
-	@Transactional
-	public void setOffLine(String userID) {
-		String hql =" UPDATE UserInfo	SET isOnline = 'N' where id='" +  userID + "'" ;
+	
+	public UserInfo registerUser(UserInfo user) {
+		Session session=sessionFactory.openSession();
+		session.save(user);
+		session.flush();
+		session.close();
 		
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
-		query.executeUpdate();
-		
+		return user;
 	}
 
+	public List<UserInfo> getAllUsers(UserInfo user) {
+		Session session=sessionFactory.openSession();
+		SQLQuery query=session.createSQLQuery(
+		//"select * from proj2_user where username in (select username from UserInfo where username!=? minus(select to_id from proj2_friend where from_id=? union select from_id from proj2_friend where to_id=?))");
+		"select * from UserInfo where username in (select username from UserInfo where username!=? minus(select to_id from proj2_friend where from_id=? and status!='D' union select from_id from proj2_friend where to_id=? and status!='D'))");
 
-		@Transactional
-		public List<UserInfo> list() {
-		/*	log.debug("->->Starting of the method list");*/
-			@SuppressWarnings("unchecked")
-			List<UserInfo> list = (List<UserInfo>) sessionFactory.getCurrentSession()
-					.createCriteria(UserInfo.class)
-					.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+		query.setString(0, user.getUsername());
+		query.setString(1, user.getUsername());
+		query.setString(2, user.getUsername());
+		query.addEntity(UserInfo.class);
+		@SuppressWarnings("unchecked")
+		List<UserInfo> users=query.list();
+		System.out.println(users);
+		session.close();
+		return users;
+	}
 
-			return list;
-		}
+	
+
+
 
 
 }

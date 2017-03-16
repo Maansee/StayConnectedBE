@@ -2,18 +2,22 @@ package com.niit.stayconnected.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
 
 
 @Entity
-@Table(name = "Job")
+@Table(name = "C_Job")
 @Component
 public class Job {
 
@@ -37,6 +41,10 @@ public class Job {
 	
 	@Column
 	private String jobEmail;
+	
+	@ManyToOne(fetch = FetchType.EAGER,cascade=CascadeType.ALL)
+	@JoinColumn(name = "create_by_id")
+	private UserInfo createdBy;
 	
 
 	public int getJobId() {
@@ -85,6 +93,14 @@ public class Job {
 
 	public void setJobEmail(String jobEmail) {
 		this.jobEmail = jobEmail;
+	}
+
+	public UserInfo getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(UserInfo createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	

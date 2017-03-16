@@ -6,23 +6,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
+
+
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
+
 
 @Entity
-@Table(name = "UserInfo")
+@Table(name = "C_UserInfo")
 @Component
 public class UserInfo {
 
 @Id
 @GeneratedValue(strategy=GenerationType.AUTO)
-private int userId;
+private int id;
 	
 @Column(unique=true,nullable=false)
 @Size(min = 4, max = 16)
@@ -38,38 +38,29 @@ private String password;
 @Email
 private String email;
 
-@Column
-private String gender;
-
-@Column
-private String city;
-
-@Column
-private int mobile;
 
 //STUDENT, ALUMINI,EMPLOYEE, ADMIN
 @Column
-private String userrole;
+private String role;
 
-@Column
-@NotNull
-private char approved; //'Y','N' by admin
+	//enabled - true or false  - active or inactive user 
+	//true - authenticated
+	//false - user cannot login
+	@Column(name="enabled")
+	private boolean enabled;
 
 	//inOnline - true, false
 	//user login - make this isOnline as true - login 
 	//user logout - make this isOnline as false - logout
-	@Column(name="isOnline")
-	private char isOnline;
-	
-	@Transient
-	private MultipartFile displayimage;
+	@Column(name="isonline")
+	private boolean isOnline;
 
-	public int getUserId() {
-		return userId;
+	public int getId() {
+		return id;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -96,62 +87,33 @@ private char approved; //'Y','N' by admin
 		this.email = email;
 	}
 
-	public String getGender() {
-		return gender;
+	public String getRole() {
+		return role;
 	}
 
-	public void setGender(String gender) {
-		this.gender = gender;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
-	public String getCity() {
-		return city;
+	public boolean isStatus() {
+		return enabled;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
+	public void setStatus(boolean status) {
+		this.enabled = status;
 	}
 
-	public int getMobile() {
-		return mobile;
-	}
-
-	public void setMobile(int mobile) {
-		this.mobile = mobile;
-	}
-
-	public String getUserrole() {
-		return userrole;
-	}
-
-	public void setUserrole(String userrole) {
-		this.userrole = userrole;
-	}
-
-	public char getApproved() {
-		return approved;
-	}
-
-	public void setApproved(char approved) {
-		this.approved = approved;
-	}
-
-	public char getIsOnline() {
+	public boolean isOnline() {
 		return isOnline;
 	}
 
-	public void setIsOnline(char isOnline) {
+	public void setOnline(boolean isOnline) {
 		this.isOnline = isOnline;
 	}
-
-	public MultipartFile getDisplayimage() {
-		return displayimage;
-	}
-
-	public void setDisplayimage(MultipartFile displayimage) {
-		this.displayimage = displayimage;
+	
+	@Override
+	public String toString() {
+		return this.username + " " + this.email + " " + this.role + "\n";
 	}
 	
-
-
 }

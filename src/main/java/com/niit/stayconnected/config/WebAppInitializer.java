@@ -2,7 +2,9 @@ package com.niit.stayconnected.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+//configuration of DispatcherServlet
+public class WebAppInitializer extends 
+AbstractAnnotationConfigDispatcherServletInitializer{
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
@@ -11,13 +13,12 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-	
+		// TODO Auto-generated method stub
 		return null;
 	}
-    //DispatcherServlet - receives all the request (any URL)
+  //DispatcherServlet - receives all the request (any URL)
 	@Override
 	protected String[] getServletMappings() {
 	   return new String[]{"/"};
 	}
-
 }

@@ -1,24 +1,28 @@
 package com.niit.stayconnected.controller;
 
 
+import java.io.File;
+
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+
+
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.niit.stayconnected.dao.UserDAO;
+import com.niit.stayconnected.model.Email;
 
 import com.niit.stayconnected.model.UserInfo;
 
@@ -30,166 +34,143 @@ public class UserController {
 	@Autowired
 	private UserDAO userDAO;
 
-	
+	/*@Autowired
+	private FileUploadDAO fileUploadDAO;
+	*/
 	@Autowired
-	private UserInfo user;
+	private Email email;
+
 	
-	@Autowired
-	private HttpSession session;
-	
-	private static final Logger log = LoggerFactory.getLogger(UserController.class);
-	
-	
-	@RequestMapping(value = "/logout", method = RequestMethod.GET)
-	public ResponseEntity<UserInfo> logoutuser(HttpSession session)	{
-		String loggeduser = (String)session.getAttribute("loggeduser");
-		session.invalidate();
-		System.out.println("Logged user :" + loggeduser);
-		user.setIsOnline('N');
-		return new ResponseEntity<UserInfo>(HttpStatus.OK);
+	//isOnline - set true when the user login
+	//isOnline -set false when the user logout
+	@RequestMapping(value="/login",method=RequestMethod.POST)
+	public ResponseEntity<?> login(@RequestBody UserInfo user,HttpSession session){
+		// ? means it can return any type of object [Error, User]
+		
+		// the method login has to return any Type  
+		//if the user is invalid - return Error object with status code
+		//if the user is valid  - return User object with status code
+		System.out.println("h5");
+		UserInfo validUser=userDAO.authenticate(user);
+		System.out.println("h6");
+
+		if(validUser==null){
+			System.out.println("h7");
+
+			Error error=new Error("Username and password doesnt exists...");
+			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED); //401
+		}
+
+		else{
+			System.out.println("h8");
+			session.setAttribute("user", validUser);
+
+			validUser.setOnline(true);
+			userDAO.updateUser(validUser); // to update online status in db
+			
+			
+			
+			//select * from proj2_profile_pics where username='adam';
+			/*ProfilePicture getUploadFile=fileUploadDAO.getFile(user.getUsername());
+			  if(getUploadFile!=null){
+		  	String name=getUploadFile.getPhotoName();
+		  	System.out.println(getUploadFile.getData());
+		  	byte[] imagefiles=getUploadFile.getData();
+		  	try{
+		  		String path="F:/Eclipse Workspace/MyProject2/StayConnectedBE/src/main/webapp/WEB-INF/resources/images/"+user.getUsername();
+		  		File file=new File(path);
+		  		//file.mkdirs();
+		  		FileOutputStream fos = new FileOutputStream(file);//to Write some data 
+		  		fos.write(imagefiles);
+		  		fos.close();
+		  		}catch(Exception e){
+		  		e.printStackTrace();
+		  		}
+			  }*/
+			
+			return new ResponseEntity<UserInfo>(validUser,HttpStatus.OK);//200
+		}
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<UserInfo> login(@RequestBody UserInfo user, HttpSession session) {
-		log.debug("->->->->calling method authenticate");
-		user = userDAO.authenticate(user.getUserId(), user.getPassword());
-		if (user == null) {
-			user = new UserInfo(); // Do wee need to create new user?
-			/*user.setErrorCode("404");
-			user.setErrorMessage("Invalid Credentials.  Please enter valid credentials");*/
-			log.debug("->->->->In Valid Credentials");
 
-		} else
 
+	//'?'  - Any Type [User,Error] 
+	//ENDPOINT : http://localhost:8080/proj2backend/register 
+	@RequestMapping(value="/register",method=RequestMethod.POST)
+	public ResponseEntity<?> registerUser(@RequestBody UserInfo user,HttpSession session,HttpServletRequest request){
+		//client will send only username, password, email, role 
+		try{
+//		logger.debug("USERCONTROLLER=>REGISTER " + user);
+		user.setStatus(true);
+		user.setOnline(false);
+		System.out.println("h9");
+
+		UserInfo savedUser=userDAO.registerUser(user);
+		System.out.println("h10");
+
+//		logger.debug("User Id generated is " + savedUser.getId());
+		if(savedUser.getId()==0){
+			System.out.println("h111");
+			System.out.println("h1111");
+
+			Error error=new Error("Couldnt insert user details ");
+			System.out.println("h12");
+
+			return new ResponseEntity<Error>(error , HttpStatus.CONFLICT);
+		}
+		else
 		{
-			/*user.setErrorCode("200");
-			user.setErrorMessage("You have successfully logged in.");*/
-			user.setIsOnline('Y');
-			log.debug("->->->->Valid Credentials");
-			/*session.setAttribute("loggedInUser", user);*/
-			session.setAttribute("loggedInUserID", user.getUserId());
-			session.setAttribute("loggedInUserRole", user.getUserrole());
-			
-			log.debug("You are logging with the role : " +session.getAttribute("loggedInUserRole"));
+			System.out.println("h13");
 
-			//need to work on friend
-			/*friendDAO.setOnline(user.getUserId());*/
+			email.send(user, "hello "+user.getUsername()+", Your Account is Activated", "Welcome to StayConnected! Your password is "+user.getPassword()+",and Role is "+user.getRole());
+
+			return new ResponseEntity<UserInfo>(savedUser,HttpStatus.OK);
 		}
+		}catch(MessagingException e){
+			e.printStackTrace();
+			System.out.println("h14");
 
-		return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
-	}
-
-	
-	@GetMapping("/getAllUsers")
-	public ResponseEntity<List<UserInfo>> getAllUsers() {
-		List users = userDAO.list();
-		if (users.isEmpty()) {
-		/*	user.setErrorCode("100");
-			user.setErrorMessage("Not users are available");*/
-			users.add(user);
-			return new ResponseEntity<List<UserInfo>>(users, HttpStatus.OK);
+			Error error=new Error("Couldnt insert user details. Cannot have null/duplicate values " + e.getMessage());
+			return new ResponseEntity<Error>(error , HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		/*user.setErrorCode("200");
-		user.setErrorMessage("Successfully fetched the user");*/
-
-		return new ResponseEntity<List<UserInfo>>(users, HttpStatus.OK);
-
-	}
-
-	@GetMapping("/getUser/{userId}")
-	public ResponseEntity<UserInfo> getUser(@PathVariable("userId") int userId) {
-		user =userDAO.get(userId);
-
-		if (user == null) {
-			user = new UserInfo();
-			/*user.setErrorCode("404");
-			user.setErrorMessage("No user found with this id :" + userId);*/
-		}
-
-		return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
-
-	}
-
-	@PostMapping("/Authenticate/")
-	public ResponseEntity<UserInfo> validateCredentials(@RequestBody UserInfo user) {
-
-		user = userDAO.authenticate(user.getUserId(), user.getPassword());
-
-		if (user == null) { // NLP NullPointerException...what is the solution
-			user = new UserInfo();
-			/*user.setErrorCode("404");
-			user.setErrorMessage("Invalid Credentials...Please try again.");*/
-		} else {
-			/*user.setErrorCode("200");
-			user.setErrorMessage("You are successfully logged in....");*/
-			
-			session.setAttribute("loggedInUserID", user.getUserId());
-			session.setAttribute("loggedInUserRole", user.getUserrole());
-			
-			
-		}
-
-		return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
-
-	}
-
-	@PostMapping("/CreateUser/")
-	public ResponseEntity<UserInfo> createUser(@RequestBody UserInfo user)
-
-	{
-
-		if (userDAO.get(user.getUserId()) == null) {
-			userDAO.save(user);
-			/*user.setErrorCode("200");
-			user.setErrorMessage("You have successfully registered...");*/
-		} else {
-			/*user.setErrorCode("404");
-			user.setErrorMessage("User exist with this id : " + user.getUserId());*/
-
-		}
-
-		return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
-
-	}
-	
-	//this is usercontroller
-	
-	@RequestMapping(value = "/users", method = RequestMethod.GET)
-	public ResponseEntity<List<UserInfo>> listAllUsers() {
-
-		log.debug("->->->->calling method listAllUsers");
-		List<UserInfo> users = userDAO.list();
-
-		// errorCode :200 :404
-		// errorMessage :Success :Not found
-
-		if (users.isEmpty()) {
-			/*user.setErrorCode("404");
-			user.setErrorMessage("No users are available");*/
-			users.add(user);
-		}
-
-		return new ResponseEntity<List<UserInfo>>(users, HttpStatus.OK);
 	}
 
 
 
-	@RequestMapping(value = "/UpdateUser/", method = RequestMethod.PUT)
-	public ResponseEntity<UserInfo> updateUser(@RequestBody UserInfo user) {
-		log.debug("->->->->calling method updateUser");
-		if (userDAO.get(user.getUserId()) == null) {
-		/*	logger.debug("->->->->User does not exist with id " + user.getUserId());*/
-			user = new UserInfo(); // ?
-			/*user.setErrorCode("404");
-			user.setErrorMessage("User does not exist with id " + user.getUserId());*/
-			return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
+	@RequestMapping(value="/logout",method=RequestMethod.PUT)
+	public ResponseEntity<?> logout(HttpSession session){
+		UserInfo user=(UserInfo)session.getAttribute("user");
+		if(user!=null){
+			user.setOnline(false);
+			userDAO.updateUser(user);
+			try{
+	                        //change according to your workspace path and project name
+		  		String path="F:/Eclipse Workspace/MyProject2/StayConnectedBE/src/main/webapp/WEB-INF/resources/images/"+user.getUsername();
+		  		File file=new File(path);
+		  		System.out.println(file.delete());
+		  		
+		  		}catch(Exception e){
+		  		e.printStackTrace();
+		  		}
 		}
-
-		userDAO.update(user);
-		log.debug("->->->->User updated successfully");
-		return new ResponseEntity<UserInfo>(user, HttpStatus.OK);
+		session.removeAttribute("user");
+		session.invalidate();
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
-	
-	
+
+
+	@RequestMapping(value="/getUsers",method=RequestMethod.GET)
+	public ResponseEntity<?> getAllUsers(HttpSession session){
+		UserInfo user=(UserInfo)session.getAttribute("user");
+		if(user==null)
+		return new	ResponseEntity<Error>(new Error("Unauthorized user"),HttpStatus.UNAUTHORIZED);
+		else
+		{
+			List<UserInfo> users=userDAO.getAllUsers(user);
+			for(UserInfo u:users)
+				System.out.println("IsONline " + u.isOnline());
+			return new ResponseEntity<List<UserInfo>>(users,HttpStatus.OK);
+		}
+	}
 
 }

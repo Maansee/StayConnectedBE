@@ -14,10 +14,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.niit.stayconnected.model.Blog;
-import com.niit.stayconnected.model.Email;
+
 import com.niit.stayconnected.model.Job;
-import com.niit.stayconnected.model.JobApplication;
 import com.niit.stayconnected.model.UserInfo;
 
 @Configuration
@@ -25,48 +23,33 @@ import com.niit.stayconnected.model.UserInfo;
 public class ApplicationContextConfig {
 
 	
-	@Bean(name="dataSource")
-	public DataSource getDataSource()
-	{
-    	BasicDataSource dataSource = new BasicDataSource();
-		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-		dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
-		dataSource.setUsername("system");
-		dataSource.setPassword("system");
-		return dataSource;
-	}
-	
-	private Properties getHibernateProperties()
-	{
-		Properties properties=new Properties();
-		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
-		properties.setProperty("hibernate.show_sql", "true");
-		properties.setProperty("hibernate.hbm2ddl.auto", "update");
-		return properties;
-	}
+	@Bean
+	public SessionFactory sessionFactory() {
+		LocalSessionFactoryBuilder lsf=
+				new LocalSessionFactoryBuilder(getDataSource());
+		Properties hibernateProperties=new Properties();
+		hibernateProperties.setProperty(
+				"hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+		hibernateProperties.setProperty("hibernate.show_sql", "true");
+		lsf.addProperties(hibernateProperties);
+		Class classes[]={UserInfo.class,Job.class,Error.class};
+		return lsf.addAnnotatedClasses(classes)
 
-	
-	@Bean(name="sessionFactory")
-	public SessionFactory getSessionFactory(DataSource dataSource)
-	{
-		LocalSessionFactoryBuilder sessionBuilder=new LocalSessionFactoryBuilder(dataSource);
-		sessionBuilder.addProperties(getHibernateProperties());
-		sessionBuilder.addAnnotatedClass(UserInfo.class);
-		sessionBuilder.addAnnotatedClass(Blog.class);
-		sessionBuilder.addAnnotatedClass(Job.class);
-		sessionBuilder.addAnnotatedClass(Email.class);
-		sessionBuilder.addAnnotatedClass(JobApplication.class);
-		
-
-		return sessionBuilder.buildSessionFactory();
+		   .buildSessionFactory();
 	}
-	
-	
-	@Bean(name="transcationManager")
-	public HibernateTransactionManager getTransactionManager(SessionFactory sessionFactory)
-	{
-		HibernateTransactionManager transactionManager=new HibernateTransactionManager(sessionFactory);
-		return transactionManager;
+	@Bean
+	public DataSource getDataSource() {
+	    BasicDataSource dataSource = new BasicDataSource();
+	    dataSource.setDriverClassName("oracle.jdbc.OracleDriver");
+	    dataSource.setUrl("jdbc:oracle:thin:@localhost:1521:XE");
+	    dataSource.setUsername("system");
+	    dataSource.setPassword("system");
+	    return dataSource;
+	}
+	@Bean
+	public HibernateTransactionManager hibTransManagement(){
+		return new HibernateTransactionManager(sessionFactory());
 	}
 	
 }
