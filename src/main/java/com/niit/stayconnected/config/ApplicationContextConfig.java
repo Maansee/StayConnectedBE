@@ -14,7 +14,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-
+import com.niit.stayconnected.model.BlogComment;
+import com.niit.stayconnected.model.BlogPost;
 import com.niit.stayconnected.model.Job;
 import com.niit.stayconnected.model.UserInfo;
 
@@ -33,7 +34,7 @@ public class ApplicationContextConfig {
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
 		lsf.addProperties(hibernateProperties);
-		Class classes[]={UserInfo.class,};
+		Class classes[]={UserInfo.class,Job.class,BlogPost.class,BlogComment.class};
 		return lsf.addAnnotatedClasses(classes)
 
 		   .buildSessionFactory();
