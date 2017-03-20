@@ -24,8 +24,6 @@ import com.niit.stayconnected.model.Error;
 import com.niit.stayconnected.model.UserInfo;
 
 
-
-
 @RestController
 @RequestMapping("/blog")
 public class BlogController {
@@ -43,7 +41,7 @@ public class BlogController {
 	public ResponseEntity<?> getBlogList(HttpSession session){
 		UserInfo user=(UserInfo)session.getAttribute("user");
 		if(user==null){
-			Error error=new Error(1,"Unauthroized user");
+			Error error=new Error(1,"Unauthorized user");
 			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
 		}
 		List<BlogPost> blogPosts=blogDAO.getBlogPosts();
@@ -53,7 +51,7 @@ public class BlogController {
 	public ResponseEntity<?> getBlogPost(@PathVariable(value="id") int id,HttpSession session){
 		UserInfo user=(UserInfo)session.getAttribute("user");
 		if(user==null){
-			Error error=new Error(1,"Unauthroized user");
+			Error error=new Error(1,"Unauthorized user");
 			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
 		}
 		BlogPost blogPost=blogDAO.getBlogPost(id);
@@ -64,13 +62,13 @@ public class BlogController {
     public ResponseEntity<?> addBlogPost( @RequestBody BlogPost blogPost,HttpSession session) {
 		UserInfo user=(UserInfo)session.getAttribute("user");// type casting
 		if(user==null){
-			Error error=new Error(1,"Unauthroized user");
+			Error error=new Error(1,"Unauthorized user");
 			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
 		}
          BlogPost addedBlogPost= blogDAO.addBlogPost(user, blogPost);
  		
          try {
-			email.send(user, "hello "+user.getUsername()+", You post a Blog", "Welcome to Yashashree's website - Webminar! Your blog "+blogPost.getBlogTitle()+" is posted successfully. Thank You");
+			email.send(user, "hello "+user.getUsername()+", You post a Blog", "Welcome to StayConnected! Your blog "+blogPost.getBlogTitle()+" is posted successfully. Thank You");
 		} catch (MessagingException e) {
 		  	  System.out.println("blogController exception in create blog");
 			e.printStackTrace();
@@ -81,7 +79,7 @@ public class BlogController {
 	public ResponseEntity<?> getBlogComments(@PathVariable(value="blogId")int blogId,HttpSession session){
 		UserInfo user=(UserInfo)session.getAttribute("user");
 		if(user==null){
-			Error error=new Error(1,"Unauthroized user");
+			Error error=new Error(1,"Unauthorized user");
 			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
 		}
 		List<BlogComment> blogComments=blogDAO.getComments(blogId);
@@ -93,7 +91,7 @@ public class BlogController {
     public ResponseEntity<?> addBlogComment( @RequestBody BlogComment blogComment,HttpSession session) {
     	UserInfo user=(UserInfo)session.getAttribute("user");
 		if(user==null){
-			Error error=new Error(1,"Unauthroized user");
+			Error error=new Error(1,"Unauthorized user");
 			return new ResponseEntity<Error>(error,HttpStatus.UNAUTHORIZED);
 		}
 		System.out.println("COMMENT is " + blogComment);
@@ -126,7 +124,7 @@ public class BlogController {
  		return new ResponseEntity<BlogPost>(HttpStatus.NOT_FOUND);
 
  	try {
-		email.send(user, "hello "+user.getUsername()+", You edit a blog", "Welcome to Yashashree's website - Webminar! Your blog "+blogPost.getBlogTitle()+" is edited successfully.");
+		email.send(user, "hello "+user.getUsername()+", You edit a blog", "Welcome to StayConnected! Your blog "+blogPost.getBlogTitle()+" is edited successfully.");
 	} catch (MessagingException e) {
   	  System.out.println("blogController exception in edit blog");
 
@@ -150,7 +148,7 @@ public class BlogController {
  			System.out.println("Delete function at blog controller3");
  			blogDAO.deleteBlog(id);
  			try {
-				email.send(user, "hello "+user.getUsername()+", Your blog is deleted", "Welcome to Yashashree's website - Webminar! Your blog "+blogpost.getBlogTitle()+" is deleted successfully.");
+				email.send(user, "hello "+user.getUsername()+", Your blog is deleted", "Welcome to StayConnected! Your blog "+blogpost.getBlogTitle()+" is deleted successfully.");
 			} catch (MessagingException e) {
 			  	  System.out.println("blogController exception in delete blog");
 				e.printStackTrace();

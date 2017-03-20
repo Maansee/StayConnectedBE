@@ -37,6 +37,7 @@ public class UserController {
 	/*@Autowired
 	private FileUploadDAO fileUploadDAO;
 	*/
+	
 	@Autowired
 	private Email email;
 

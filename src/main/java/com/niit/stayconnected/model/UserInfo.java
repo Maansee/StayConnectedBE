@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 
 @Entity
-@Table(name = "C_UserInfo")
+@Table(name = "A_UserInfo")
 @Component
 public class UserInfo {
 

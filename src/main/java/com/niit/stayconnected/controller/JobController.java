@@ -7,7 +7,6 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 
-
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.niit.stayconnected.dao.BlogDAO;
 import com.niit.stayconnected.dao.JobDAO;
 import com.niit.stayconnected.dao.UserDAO;
-import com.niit.stayconnected.model.BlogComment;
-import com.niit.stayconnected.model.BlogPost;
 import com.niit.stayconnected.model.Email;
 import com.niit.stayconnected.model.Error;
 import com.niit.stayconnected.model.Job;
@@ -67,7 +63,7 @@ public class JobController {
 						jobDao.postJob(job);
 						System.out.println("hello4");
 				    	try {
-				       		email.send(user, "hello "+user.getUsername()+", You posted a job", "Welcome to Yashashree's website - Webminar! You posted a job "+job.getJobTitle()+" Thank you.");
+				       		email.send(user, "hello "+user.getUsername()+", You posted a job", "Welcome toStayConnected! You posted a job "+job.getJobTitle()+" Thank you.");
 				       	} catch (MessagingException e) {
 				         	  System.out.println("jobController exception in edit job");
 
@@ -110,7 +106,7 @@ public class JobController {
 	    		return new ResponseEntity<Job>(HttpStatus.NOT_FOUND);
 
 	    	try {
-	   		email.send(user, "hello "+user.getUsername()+", You edit a job", "Welcome to Yashashree's website - Webminar! The job "+job.getJobTitle()+" you posted is edited successfully.");
+	   		email.send(user, "hello "+user.getUsername()+", You edit a job", "Welcome to StayConnected! The job "+job.getJobTitle()+" you posted is edited successfully.");
 	   	} catch (MessagingException e) {
 	     	  System.out.println("jobController exception in edit job");
 
@@ -134,7 +130,7 @@ public class JobController {
 	    			System.out.println("Delete function at blog controller3");
 	    			jobDao.deleteJob(id);
 	    			try {
-	   				email.send(user, "hello "+user.getUsername()+", the job you posted is deleted", "Welcome to Yashashree's website - Webminar! The job "+job.getJobTitle()+" you posted is deleted successfully.");
+	   				email.send(user, "hello "+user.getUsername()+", the job you posted is deleted", "Welcome to StayConnected! The job "+job.getJobTitle()+" you posted is deleted successfully.");
 	   			} catch (MessagingException e) {
 	   			  	  System.out.println("blogController exception in delete blog");
 	   				e.printStackTrace();

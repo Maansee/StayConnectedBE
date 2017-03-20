@@ -18,12 +18,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.stereotype.Component;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 
 @Entity
-@Table(name="C_BlogPost")
+@Table(name="A_BlogPost")
+@Component
 public class BlogPost implements Serializable{
 
 @Id
