@@ -8,12 +8,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.niit.stayconnected.dao.BlogDAO;
 import com.niit.stayconnected.model.BlogComment;
 import com.niit.stayconnected.model.BlogPost;
 import com.niit.stayconnected.model.UserInfo;
 
+@Transactional
 @Repository
 public class BlogDAOImpl implements BlogDAO {
 

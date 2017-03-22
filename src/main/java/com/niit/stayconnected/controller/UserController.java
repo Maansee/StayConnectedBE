@@ -160,7 +160,7 @@ public class UserController {
 	}
 
 
-	@RequestMapping(value="/getUsers",method=RequestMethod.GET)
+	@RequestMapping(value="#/getUsers",method=RequestMethod.GET)
 	public ResponseEntity<?> getAllUsers(HttpSession session){
 		UserInfo user=(UserInfo)session.getAttribute("user");
 		if(user==null)

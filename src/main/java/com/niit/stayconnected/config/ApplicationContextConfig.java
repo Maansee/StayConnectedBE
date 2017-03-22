@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.niit.stayconnected.model.BlogComment;
 import com.niit.stayconnected.model.BlogPost;
+import com.niit.stayconnected.model.Friend;
 import com.niit.stayconnected.model.Job;
 import com.niit.stayconnected.model.UserInfo;
 
@@ -56,6 +57,7 @@ public class ApplicationContextConfig {
 		sessionBuilder.addAnnotatedClass(BlogPost.class);
 		sessionBuilder.addAnnotatedClass(BlogComment.class);
 		sessionBuilder.addAnnotatedClass(Job.class);
+		sessionBuilder.addAnnotatedClass(Friend.class);
 
 		return sessionBuilder.buildSessionFactory();
 	}
