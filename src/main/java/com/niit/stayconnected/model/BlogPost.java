@@ -40,6 +40,7 @@ private Date createdOn;
 private UserInfo BlogAuthor;
 
 private String BlogTitle;
+
 @Lob
 @Column(name="BlogDescription")
 private String BlogDescription;

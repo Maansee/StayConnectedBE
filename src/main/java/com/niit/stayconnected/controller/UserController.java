@@ -2,7 +2,7 @@ package com.niit.stayconnected.controller;
 
 
 import java.io.File;
-
+import java.io.FileOutputStream;
 import java.util.List;
 
 import javax.mail.MessagingException;
@@ -21,9 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.niit.stayconnected.dao.FileUploadDAO;
 import com.niit.stayconnected.dao.UserDAO;
 import com.niit.stayconnected.model.Email;
-
+import com.niit.stayconnected.model.ProfilePhoto;
 import com.niit.stayconnected.model.UserInfo;
 
 
@@ -34,9 +35,9 @@ public class UserController {
 	@Autowired
 	private UserDAO userDAO;
 
-	/*@Autowired
+	@Autowired
 	private FileUploadDAO fileUploadDAO;
-	*/
+	
 	
 	@Autowired
 	private Email email;
@@ -72,7 +73,7 @@ public class UserController {
 			
 			
 			//select * from proj2_profile_pics where username='adam';
-			/*ProfilePicture getUploadFile=fileUploadDAO.getFile(user.getUsername());
+			ProfilePhoto getUploadFile=fileUploadDAO.getFile(user.getUsername());
 			  if(getUploadFile!=null){
 		  	String name=getUploadFile.getPhotoName();
 		  	System.out.println(getUploadFile.getData());
@@ -87,7 +88,7 @@ public class UserController {
 		  		}catch(Exception e){
 		  		e.printStackTrace();
 		  		}
-			  }*/
+			  }
 			
 			return new ResponseEntity<UserInfo>(validUser,HttpStatus.OK);//200
 		}
