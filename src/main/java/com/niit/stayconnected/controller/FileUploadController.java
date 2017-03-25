@@ -53,7 +53,7 @@ public class FileUploadController {
 	            	byte[] imagefiles=getUploadFile.getData();  //image
 	            	try{
 	            		//change the path according to your workspace and the name of your project
-	            		String path="C:/Users/DELL/Desktop/BackendProject/src/main/webapp/WEB-INF/resources/images/"+user.getUsername();
+	            		String path="F:/Eclipse Workspace/MyProject2/StayConnectedBE/src/main/webapp/WEB-INF/resources/images/"+user.getUsername();
 	            		File file=new File(path);
 	            		//file.mkdirs();
 	            		FileOutputStream fos = new FileOutputStream(file);

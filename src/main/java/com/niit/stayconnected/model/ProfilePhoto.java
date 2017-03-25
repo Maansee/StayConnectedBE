@@ -8,7 +8,7 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "A_ProfilePics")
+/*@Table(name = "A_ProfilePics")*/
 public class ProfilePhoto {
 
 	@Id

@@ -19,6 +19,7 @@ import com.niit.stayconnected.model.BlogComment;
 import com.niit.stayconnected.model.BlogPost;
 import com.niit.stayconnected.model.Friend;
 import com.niit.stayconnected.model.Job;
+import com.niit.stayconnected.model.ProfilePhoto;
 import com.niit.stayconnected.model.UserInfo;
 
 
@@ -58,6 +59,7 @@ public class ApplicationContextConfig {
 		sessionBuilder.addAnnotatedClass(BlogComment.class);
 		sessionBuilder.addAnnotatedClass(Job.class);
 		sessionBuilder.addAnnotatedClass(Friend.class);
+		sessionBuilder.addAnnotatedClass(ProfilePhoto.class);
 
 		return sessionBuilder.buildSessionFactory();
 	}

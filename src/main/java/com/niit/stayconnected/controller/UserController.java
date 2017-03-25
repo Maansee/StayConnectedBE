@@ -72,7 +72,7 @@ public class UserController {
 			
 			
 			
-			//select * from proj2_profile_pics where username='adam';
+			//select * from UserInfo_profile_pics where username='adam';
 			ProfilePhoto getUploadFile=fileUploadDAO.getFile(user.getUsername());
 			  if(getUploadFile!=null){
 		  	String name=getUploadFile.getPhotoName();
