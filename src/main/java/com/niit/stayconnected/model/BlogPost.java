@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 @Entity
-@Table(name="A_BlogPost")
+/*@Table(name="A_BlogPost")*/
 @Component
 public class BlogPost implements Serializable{
 

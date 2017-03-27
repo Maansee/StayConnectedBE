@@ -44,7 +44,7 @@ public class ApplicationContextConfig {
 		Properties properties=new Properties();
 		properties.setProperty("hibernate.show", "true");
 		properties.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
-		properties.setProperty("hibernate.hbm2ddl.auto", "update");
+		properties.setProperty("hibernate.hbm2ddl.auto", "create");
 		return properties;
 	}
 

@@ -16,7 +16,7 @@ import javax.persistence.Table;
 import org.springframework.stereotype.Component;
 
 @Entity
-@Table(name="A_BlogComment")
+/*@Table(name="A_BlogComment")*/
 @Component
 public class BlogComment implements Serializable{
 

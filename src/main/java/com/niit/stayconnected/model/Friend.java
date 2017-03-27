@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import org.springframework.stereotype.Component;
 
 @Entity
-@Table(name="A_Friend")
+/*@Table(name="A_Friend")*/
 @Component
 public class Friend {
 

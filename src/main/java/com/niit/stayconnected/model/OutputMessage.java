@@ -4,7 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Table;
 
-@Table(name = "A_OutputMessage")
+/*@Table(name = "A_OutputMessage")*/
 public class OutputMessage extends Message{
 
 private Date time;

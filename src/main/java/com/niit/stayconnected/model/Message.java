@@ -2,7 +2,7 @@ package com.niit.stayconnected.model;
 
 import javax.persistence.Table;
 
-@Table(name = "A_Message")
+/*@Table(name = "A_Message")*/
 public class Message {
 
 	 private String message;

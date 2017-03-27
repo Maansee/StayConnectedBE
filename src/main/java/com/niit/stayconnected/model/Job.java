@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 
 
 @Entity
-@Table(name = "A_Job")
+/*@Table(name = "A_Job")*/
 @Component
 public class Job {
 

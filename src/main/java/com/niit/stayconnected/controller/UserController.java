@@ -79,7 +79,7 @@ public class UserController {
 		  	System.out.println(getUploadFile.getData());
 		  	byte[] imagefiles=getUploadFile.getData();
 		  	try{
-		  		String path="F:/Eclipse Workspace/MyProject2/StayConnectedBE/src/main/webapp/WEB-INF/resources/images/"+user.getUsername();
+		  		String path="F://Eclipse Workspace//MyProject2//StayConnectedBE//src/main//webapp//resources//images//"+user.getUsername();
 		  		File file=new File(path);
 		  		//file.mkdirs();
 		  		FileOutputStream fos = new FileOutputStream(file);//to Write some data 
@@ -147,7 +147,7 @@ public class UserController {
 			userDAO.updateUser(user);
 			try{
 	                        //change according to your workspace path and project name
-		  		String path="F:/Eclipse Workspace/MyProject2/StayConnectedBE/src/main/webapp/WEB-INF/resources/images/"+user.getUsername();
+		  		String path="F://Eclipse Workspace//MyProject2//StayConnectedBE//src/main//webapp//resources//images//"+user.getUsername();
 		  		File file=new File(path);
 		  		System.out.println(file.delete());
 		  		
@@ -161,7 +161,7 @@ public class UserController {
 	}
 
 
-	@RequestMapping(value="#/getUsers",method=RequestMethod.GET)
+	@RequestMapping(value="/getUsers",method=RequestMethod.GET)
 	public ResponseEntity<?> getAllUsers(HttpSession session){
 		UserInfo user=(UserInfo)session.getAttribute("user");
 		if(user==null)
